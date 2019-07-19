@@ -15,24 +15,38 @@ namespace AntColonyMinMaxTSP
     {
         public static UInt32 MaxCandListSize;
         public static Random r = new Random();
-        public static List<String> toFile = new List<String>();
+        public static Values values;
+
         static void Main(string[] args)
         {
             string pathFile = @"TSP\kroA100.tsp";
             Point[] points = TSPFileReader.ReadTspFile(pathFile);
             Graph graph = new Graph(points);
-            toFile.Add("Ant Colony for " + pathFile);
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
+
+
+            
+
             Parameters parameters = new Parameters();
-            parameters.SetAntsCount(graph.dimension);
+
+            UInt32 ants = graph.dimension;
+            parameters.SetAntsCount(ants);
             MaxCandListSize = graph.dimension - 1;
-            RunMMAS(graph, parameters, 1000000 / parameters.antsCount);
-            stopWatch.Stop();
-            TimeSpan ts = stopWatch.Elapsed;
-            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
-            toFile.Add("Time: " + elapsedTime);
-            SaveToFile(toFile, "ACO", "kroA100");
+
+            //Console.WriteLine("Set count of Ants: ");
+            //UInt32 ants = UInt32.Parse(Console.ReadLine());
+            //parameters.SetAntsCount(ants);
+
+            //MaxCandListSize = ants - 1;
+            values = new Values(ants, pathFile, "ACO");
+            values.StartTime();
+
+            
+
+            RunMMAS(graph, parameters, 10000 / parameters.antsCount);
+
+            values.StopTime();
+
+            Console.WriteLine("End");
             Console.ReadKey();
         }
 
@@ -91,7 +105,8 @@ namespace AntColonyMinMaxTSP
                         newBestFound = true;
 
                         Console.WriteLine("New best solution found with the cost: {0} at iteration {1}", bestAnt.cost, iteration);
-                        toFile.Add("-|New best |" + iteration + "|" + bestAnt.cost);
+                        //toFile.Add("-|New best |" + iteration + "|" + bestAnt.cost);
+                        Values.AddNewValues((int)iteration, bestAnt.cost);
 
                     }
 
@@ -313,19 +328,6 @@ namespace AntColonyMinMaxTSP
             }
 
             return sortedNodes;
-        }
-
-        public static void SaveToFile(List<String> tofile, string algorithm, string startFile)
-        {
-            DateTime dt = DateTime.Now;
-            string fileName = String.Format("{0:y yy yyy yyyy}", dt) + "-" + algorithm + "-" + startFile;
-            using (StreamWriter sw = new StreamWriter(@"Files\" + fileName + ".txt"))
-            {
-                foreach (string line in tofile)
-                {
-                    sw.WriteLine(line);
-                }
-            }
         }
 
 
