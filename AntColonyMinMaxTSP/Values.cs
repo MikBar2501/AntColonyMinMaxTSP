@@ -45,7 +45,7 @@ namespace AntColonyMinMaxTSP
         {
             stopWatch.Stop();
             timeSpan = stopWatch.Elapsed;
-            elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds / 10);
+            elapsedTime = String.Format("{0}-{1:00}:{2:00}:{3:00}.{4:00}", timeSpan.Days, timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds / 10);
             toFile.Add("Time: " + elapsedTime);
             SaveToFile(toFile, algorithm, SplitName(path));
         }

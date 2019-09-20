@@ -19,7 +19,12 @@ namespace AntColonyMinMaxTSP
 
         static void Main(string[] args)
         {
-            string pathFile = @"TSP\kroA100.tsp";
+            Console.WriteLine("Set name of file: ");
+            string name = Console.ReadLine();
+            string nameFile = "TSP\\" + name;
+
+            string pathFile = nameFile;
+            //string pathFile = @"TSP\kroA100.tsp";
             Point[] points = TSPFileReader.ReadTspFile(pathFile);
             Graph graph = new Graph(points);
 
@@ -27,8 +32,9 @@ namespace AntColonyMinMaxTSP
             
 
             Parameters parameters = new Parameters();
-
-            UInt32 ants = graph.dimension;
+            Console.WriteLine("Set count of ants: ");
+            UInt32 ants = UInt32.Parse(Console.ReadLine());
+            //UInt32 ants = graph.dimension;
             parameters.SetAntsCount(ants);
             MaxCandListSize = graph.dimension - 1;
 
@@ -42,7 +48,7 @@ namespace AntColonyMinMaxTSP
 
             
 
-            RunMMAS(graph, parameters, 10000 / parameters.antsCount);
+            RunMMAS(graph, parameters, 1000);
 
             values.StopTime();
 
@@ -61,8 +67,9 @@ namespace AntColonyMinMaxTSP
 
             PheromoneMemory pheromone = new PheromoneMemory(graph.dimension, maxPheromone);
             double[] heuristic = new double[graph.dimension * graph.dimension];
+            //double[,] heur = new double[graph.dimension, graph.dimension];
 
-            foreach (var distance in graph.edgeWeight)
+            //foreach (var distance in graph.edgeWeight)
 
 
                 for (int i = 0; i < graph.dimension; i++)
@@ -70,7 +77,8 @@ namespace AntColonyMinMaxTSP
                     for (int j = 0; j < graph.dimension; j++)
                     {
                         heuristic[j + (graph.dimension * i)] = (1 / Math.Pow(graph.edgeWeight[i, j], parameters.beta));
-                    }
+                        //heur[i,j] = (1 / Math.Pow(graph.edgeWeight[i, j], parameters.beta)); ;
+                }
                 }
 
             Ant[] ants = new Ant[parameters.antsCount];
@@ -190,11 +198,12 @@ namespace AntColonyMinMaxTSP
             UInt32 nextNode = currentNode;
             if (!ant.AllVisited())
             {
-                double[] myNeighbours = new double[graph.dimension - 1];
-                for (int i = 0; i < graph.dimension - 1; i++)
+                double[] myNeighbours = new double[graph.dimension];
+                for (int i = 0; i < graph.dimension; i++)
                 {
                     if (i == currentNode)
                     {
+                        //myNeighbours[i] = null;
                         continue;
                     }
                     myNeighbours[i] = graph.edgeWeight[(int)currentNode, i];
@@ -204,7 +213,7 @@ namespace AntColonyMinMaxTSP
 
                 for (int j = 0; j < graph.dimension; j++)
                 {
-                    if (graph.edgeWeight[currentNode, j] != min)
+                    if (graph.edgeWeight[currentNode, j] != min || graph.edgeWeight[currentNode, j] == 0)
                     {
                         continue;
                     }
